@@ -1,0 +1,29 @@
+server:
+  port: 1111
+  address: 0.0.0.0
+spring:
+  servlet:
+    multipart:
+      max-file-size: 300MB
+      max-request-size: 300MB
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/guokai_platform?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT
+    username: debian-sys-maint
+    password: isdsZsPwzY7zpe7h
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    password: ''
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: 1
+        max-idle: 8
+        min-idle: 2
+j
+mybatis-plus:
+  mapper-locations: classpath:/mappers/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
