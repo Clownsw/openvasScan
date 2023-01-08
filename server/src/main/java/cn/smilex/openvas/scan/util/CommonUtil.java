@@ -1,9 +1,11 @@
 package cn.smilex.openvas.scan.util;
 
-import cn.hutool.core.lang.Snowflake;
+import cn.smilex.openvas.scan.concurrent.CounterThreadFactory;
+import cn.smilex.openvas.scan.config.CommonConfig;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -15,12 +17,10 @@ import java.util.function.Supplier;
  * @since 1.0
  */
 public final class CommonUtil {
-    public static final String EMPTY_STRING = "";
     public static ConfigurableApplicationContext configurableApplicationContext;
-    public static final Snowflake SNOWFLAKE = new Snowflake(2, 3);
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-    private static final ExecutorService COMMON_THREAD_POOL = Executors.newCachedThreadPool();
+    private static final ExecutorService COMMON_THREAD_POOL = Executors.newCachedThreadPool(
+            new CounterThreadFactory("common-pool-thread")
+    );
 
     static {
         configurableApplicationContext = null;
@@ -33,6 +33,16 @@ public final class CommonUtil {
      * @return Future
      */
     public static Future<?> submitTaskToCommonThreadPool(Runnable task) {
+        return COMMON_THREAD_POOL.submit(task);
+    }
+
+    /**
+     * 提交任务到公共线程池
+     *
+     * @param task 任务
+     * @return Future
+     */
+    public static <T> Future<T> submitTaskToCommonThreadPool(Callable<T> task) {
         return COMMON_THREAD_POOL.submit(task);
     }
 
@@ -55,5 +65,24 @@ public final class CommonUtil {
         do {
             v = expression.get();
         } while (isNull ? v == null : v != null);
+    }
+
+    @FunctionalInterface
+    public interface ListToStrTask<T> {
+        String handler(T v);
+    }
+
+    public static <T> String listToStr(List<T> list, ListToStrTask<T> task) {
+        if (list == null || list.size() == 0) {
+            return CommonConfig.EMPTY_STRING;
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        for (T t : list) {
+            sb.append(task.handler(t));
+        }
+
+        return sb.toString();
     }
 }
