@@ -1,0 +1,39 @@
+package cn.smilex.openvas.scan.engine.openvas;
+
+import cn.smilex.openvas.scan.engine.openvas.parse.OpenvasCommandGetConfigs;
+import cn.smilex.openvas.scan.engine.openvas.parse.OpenvasCommandParse;
+import cn.smilex.openvas.scan.pojo.HashMapBuilder;
+import org.springframework.stereotype.Component;
+
+import java.util.Map;
+
+/**
+ * @author smilex
+ */
+@SuppressWarnings("unchecked")
+@Component
+public class OpenvasEngine {
+    private static final Map<OpenvasCommand, OpenvasCommandParse<?>> OPENVAS_COMMAND_PARSE_MAP;
+
+    static {
+        OPENVAS_COMMAND_PARSE_MAP = new HashMapBuilder<OpenvasCommand, OpenvasCommandParse<?>>(1)
+                .put(OpenvasCommand.GET_CONFIGS, new OpenvasCommandGetConfigs())
+                .get();
+    }
+
+    /**
+     * 解析xml
+     *
+     * @param xml            xml
+     * @param openvasCommand command
+     * @param <T>            result type
+     * @return result
+     */
+    public <T> T parse(String xml, OpenvasCommand openvasCommand) {
+        OpenvasCommandParse<T> openvasCommandParse;
+        if ((openvasCommandParse = (OpenvasCommandParse<T>) OPENVAS_COMMAND_PARSE_MAP.get(openvasCommand)) != null) {
+            return openvasCommandParse.parse(xml);
+        }
+        return null;
+    }
+}

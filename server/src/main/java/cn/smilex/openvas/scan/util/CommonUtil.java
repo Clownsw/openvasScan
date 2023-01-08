@@ -4,6 +4,7 @@ import cn.smilex.openvas.scan.concurrent.CounterThreadFactory;
 import cn.smilex.openvas.scan.config.CommonConfig;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -72,6 +73,14 @@ public final class CommonUtil {
         String handler(T v);
     }
 
+    /**
+     * list转字符串
+     *
+     * @param list list
+     * @param task 转换中间处理
+     * @param <T>  unknown type
+     * @return 字符串
+     */
     public static <T> String listToStr(List<T> list, ListToStrTask<T> task) {
         if (list == null || list.size() == 0) {
             return CommonConfig.EMPTY_STRING;
@@ -84,5 +93,15 @@ public final class CommonUtil {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * 解析UTC时间
+     *
+     * @param time 时间
+     * @return 时间
+     */
+    public static LocalDateTime parseUtcTime(String time) {
+        return LocalDateTime.from(CommonConfig.DATE_TIME_FORMATTER.parse(time.replace("Z", CommonConfig.EMPTY_STRING)));
     }
 }
