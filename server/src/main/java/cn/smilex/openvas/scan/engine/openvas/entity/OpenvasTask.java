@@ -17,18 +17,22 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OpenvasConfig {
+public class OpenvasTask {
     private String id;
     private String name;
     private String comment;
+    private String status;
+    private String configId;
+    private String targetId;
+    private String scannerId;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH24:mm:ss", timezone = "UTC+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC+8")
     private LocalDateTime createdTime;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH24:mm:ss", timezone = "UTC+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC+8")
     private LocalDateTime modifyTime;
 }

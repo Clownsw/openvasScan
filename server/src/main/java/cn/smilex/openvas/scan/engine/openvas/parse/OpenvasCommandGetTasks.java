@@ -2,7 +2,7 @@ package cn.smilex.openvas.scan.engine.openvas.parse;
 
 import cn.hutool.core.util.XmlUtil;
 import cn.smilex.openvas.scan.config.CommonConfig;
-import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasConfig;
+import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasTask;
 import cn.smilex.openvas.scan.pojo.XmlTagBuilder;
 import cn.smilex.openvas.scan.util.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -16,54 +16,46 @@ import java.util.List;
  */
 @SuppressWarnings("unchecked")
 @Slf4j
-public class OpenvasCommandGetConfigs implements OpenvasCommandParse<List<OpenvasConfig>> {
-    private static final String ROOT_TAG_NAME = "get_configs";
+public class OpenvasCommandGetTasks implements OpenvasCommandParse<List<OpenvasTask>> {
+    private static final String ROOT_TAG_NAME = "get_tasks";
 
-    /**
-     * 解析xml
-     *
-     * @param xml xml
-     * @return result
-     */
     @Override
-    public List<OpenvasConfig> parse(String xml) {
+    public List<OpenvasTask> parse(String xml) {
         try {
             Element root = XmlUtil.getRootElement(XmlUtil.readXML(xml));
 
-            List<Element> configList = XmlUtil.getElements(root, "config");
+            List<Element> taskList = XmlUtil.getElements(root, "task");
 
-            if (configList.size() == 0) {
-                return (List<OpenvasConfig>) CommonConfig.EMPTY_LIST;
+            if (taskList.size() == 0) {
+                return (List<OpenvasTask>) CommonConfig.EMPTY_LIST;
             }
 
-            List<OpenvasConfig> openvasConfigList = new ArrayList<>(configList.size());
+            List<OpenvasTask> openvasTaskList = new ArrayList<>(taskList.size());
 
-            for (Element element : configList) {
-                openvasConfigList.add(
-                        new OpenvasConfig(
+            for (Element element : taskList) {
+                openvasTaskList.add(
+                        new OpenvasTask(
                                 element.getAttribute("id"),
                                 CommonUtil.elementGetFirstChild(element, "name"),
                                 CommonUtil.elementGetFirstChild(element, "comment"),
+                                CommonUtil.elementGetFirstChild(element, "status"),
+                                XmlUtil.getElement(element, "config").getAttribute("id"),
+                                XmlUtil.getElement(element, "target").getAttribute("id"),
+                                XmlUtil.getElement(element, "scanner").getAttribute("id"),
                                 CommonUtil.parseUtcTime(XmlUtil.getElement(element, "creation_time").getFirstChild().getTextContent()),
                                 CommonUtil.parseUtcTime(XmlUtil.getElement(element, "modification_time").getFirstChild().getTextContent())
                         )
                 );
             }
 
-            return openvasConfigList;
+            return openvasTaskList;
 
         } catch (Exception e) {
             log.error("", e);
         }
-        return (List<OpenvasConfig>) CommonConfig.EMPTY_LIST;
+        return (List<OpenvasTask>) CommonConfig.EMPTY_LIST;
     }
 
-    /**
-     * 获取空标签
-     *
-     * @param params 参数
-     * @return xml
-     */
     @Override
     public String getEmptyXml(Object... params) {
         return new XmlTagBuilder(ROOT_TAG_NAME)

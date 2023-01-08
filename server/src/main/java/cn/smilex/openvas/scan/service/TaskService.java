@@ -13,4 +13,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 @SuppressWarnings("all")
 public interface TaskService extends IService<Task> {
+
+    /**
+     * 获取所有task
+     *
+     * @return task list
+     */
+    String selectAllTask();
 }

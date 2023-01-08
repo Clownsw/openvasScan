@@ -1,8 +1,11 @@
 package cn.smilex.openvas.scan.util;
 
+import cn.hutool.core.util.XmlUtil;
 import cn.smilex.openvas.scan.concurrent.CounterThreadFactory;
 import cn.smilex.openvas.scan.config.CommonConfig;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -103,5 +106,20 @@ public final class CommonUtil {
      */
     public static LocalDateTime parseUtcTime(String time) {
         return LocalDateTime.from(CommonConfig.DATE_TIME_FORMATTER.parse(time.replace("Z", CommonConfig.EMPTY_STRING)));
+    }
+
+    /**
+     * Element获取第一个节点 如果为空返回空字符串, 否则返回值
+     *
+     * @param element element
+     * @param tagName 标签名称
+     * @return result
+     */
+    public static String elementGetFirstChild(Element element, String tagName) {
+        Node node;
+        if ((node = XmlUtil.getElement(element, tagName).getFirstChild()) != null) {
+            return node.getTextContent();
+        }
+        return CommonConfig.EMPTY_STRING;
     }
 }
