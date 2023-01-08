@@ -7,7 +7,7 @@ import java.util.HashMap;
  * @date 2022/10/1/9:05
  * @since 1.0
  */
-public class HashMapBuilder<T, K> {
+public final class HashMapBuilder<T, K> {
     private final HashMap<T, K> data;
 
     public HashMapBuilder() {

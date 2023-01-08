@@ -30,10 +30,17 @@ public class OpenvasEngine {
      * @return result
      */
     public <T> T parse(String xml, OpenvasCommand openvasCommand) {
-        OpenvasCommandParse<T> openvasCommandParse;
-        if ((openvasCommandParse = (OpenvasCommandParse<T>) OPENVAS_COMMAND_PARSE_MAP.get(openvasCommand)) != null) {
-            return openvasCommandParse.parse(xml);
-        }
-        return null;
+        return (T) OPENVAS_COMMAND_PARSE_MAP.get(openvasCommand).parse(xml);
+    }
+
+    /**
+     * 根据openvas命令获取对应的解析器
+     *
+     * @param openvasCommand openvas命令
+     * @param <T>            unknown type
+     * @return 解析器
+     */
+    public <T> OpenvasCommandParse<T> getCommandParseByCommand(OpenvasCommand openvasCommand) {
+        return (OpenvasCommandParse<T>) OPENVAS_COMMAND_PARSE_MAP.get(openvasCommand);
     }
 }

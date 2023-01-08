@@ -3,6 +3,7 @@ package cn.smilex.openvas.scan.engine.openvas.parse;
 import cn.hutool.core.util.XmlUtil;
 import cn.smilex.openvas.scan.config.CommonConfig;
 import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasConfig;
+import cn.smilex.openvas.scan.pojo.XmlTagBuilder;
 import cn.smilex.openvas.scan.util.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Element;
@@ -16,6 +17,8 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 @Slf4j
 public class OpenvasCommandGetConfigs implements OpenvasCommandParse<List<OpenvasConfig>> {
+    private static final String ROOT_TAG_NAME = "get_configs";
+
     /**
      * 解析xml
      *
@@ -53,5 +56,17 @@ public class OpenvasCommandGetConfigs implements OpenvasCommandParse<List<Openva
             log.error("", e);
         }
         return (List<OpenvasConfig>) CommonConfig.EMPTY_LIST;
+    }
+
+    /**
+     * 获取空标签
+     *
+     * @param params 参数
+     * @return xml
+     */
+    @Override
+    public String getEmptyXml(Object... params) {
+        return new XmlTagBuilder(ROOT_TAG_NAME)
+                .getXml();
     }
 }
