@@ -1,5 +1,6 @@
 package cn.smilex.openvas.scan.service.impl;
 
+import cn.smilex.openvas.scan.exception.OpenvasScanException;
 import cn.smilex.openvas.scan.runtime.OpenvasProcessTask;
 import cn.smilex.openvas.scan.runtime.ProcessTask;
 import cn.smilex.openvas.scan.service.ConfigService;
@@ -30,7 +31,7 @@ public class ConfigServiceImpl implements ConfigService {
             }
             return processTask.getResult();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new OpenvasScanException(e.getMessage());
         }
     }
 }
