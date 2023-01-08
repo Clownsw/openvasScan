@@ -20,4 +20,12 @@ public interface TaskService extends IService<Task> {
      * @return task list
      */
     String selectAllTask();
+
+    /**
+     * 根据任务ID获取任务
+     *
+     * @param taskId 任务ID
+     * @return 任务
+     */
+    String selectConfigById(String taskId);
 }

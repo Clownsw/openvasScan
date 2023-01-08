@@ -4,7 +4,6 @@ import cn.hutool.core.util.XmlUtil;
 import cn.smilex.openvas.scan.config.CommonConfig;
 import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasTask;
 import cn.smilex.openvas.scan.pojo.XmlTagBuilder;
-import cn.smilex.openvas.scan.util.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Element;
 
@@ -33,19 +32,7 @@ public class OpenvasCommandGetTasks implements OpenvasCommandParse<List<OpenvasT
             List<OpenvasTask> openvasTaskList = new ArrayList<>(taskList.size());
 
             for (Element element : taskList) {
-                openvasTaskList.add(
-                        new OpenvasTask(
-                                element.getAttribute("id"),
-                                CommonUtil.elementGetFirstChild(element, "name"),
-                                CommonUtil.elementGetFirstChild(element, "comment"),
-                                CommonUtil.elementGetFirstChild(element, "status"),
-                                XmlUtil.getElement(element, "config").getAttribute("id"),
-                                XmlUtil.getElement(element, "target").getAttribute("id"),
-                                XmlUtil.getElement(element, "scanner").getAttribute("id"),
-                                CommonUtil.parseUtcTime(XmlUtil.getElement(element, "creation_time").getFirstChild().getTextContent()),
-                                CommonUtil.parseUtcTime(XmlUtil.getElement(element, "modification_time").getFirstChild().getTextContent())
-                        )
-                );
+                openvasTaskList.add(OpenvasCommandStructParseTask.getInstance().parse(element));
             }
 
             return openvasTaskList;

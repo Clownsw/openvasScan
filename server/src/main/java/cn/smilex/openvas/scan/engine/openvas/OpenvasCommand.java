@@ -5,5 +5,7 @@ package cn.smilex.openvas.scan.engine.openvas;
  */
 public enum OpenvasCommand {
     GET_CONFIGS,
-    GET_TASKS
+    GET_CONFIG,
+    GET_TASKS,
+    GET_TASK
 }

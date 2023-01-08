@@ -4,7 +4,6 @@ import cn.hutool.core.util.XmlUtil;
 import cn.smilex.openvas.scan.config.CommonConfig;
 import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasConfig;
 import cn.smilex.openvas.scan.pojo.XmlTagBuilder;
-import cn.smilex.openvas.scan.util.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Element;
 
@@ -39,15 +38,7 @@ public class OpenvasCommandGetConfigs implements OpenvasCommandParse<List<Openva
             List<OpenvasConfig> openvasConfigList = new ArrayList<>(configList.size());
 
             for (Element element : configList) {
-                openvasConfigList.add(
-                        new OpenvasConfig(
-                                element.getAttribute("id"),
-                                CommonUtil.elementGetFirstChild(element, "name"),
-                                CommonUtil.elementGetFirstChild(element, "comment"),
-                                CommonUtil.parseUtcTime(XmlUtil.getElement(element, "creation_time").getFirstChild().getTextContent()),
-                                CommonUtil.parseUtcTime(XmlUtil.getElement(element, "modification_time").getFirstChild().getTextContent())
-                        )
-                );
+                openvasConfigList.add(OpenvasCommandStructParseConfig.getInstance().parse(element));
             }
 
             return openvasConfigList;

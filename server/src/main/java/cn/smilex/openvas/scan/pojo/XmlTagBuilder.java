@@ -43,9 +43,9 @@ public final class XmlTagBuilder {
             sb.append(" ")
                     .append(key)
                     .append("=")
-                    .append("\"")
+                    .append("\\\"")
                     .append(value)
-                    .append("\"");
+                    .append("\\\"");
         });
 
         sb.append(">")

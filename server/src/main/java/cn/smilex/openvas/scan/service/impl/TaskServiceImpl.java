@@ -2,14 +2,13 @@ package cn.smilex.openvas.scan.service.impl;
 
 import cn.smilex.openvas.scan.engine.openvas.OpenvasCommand;
 import cn.smilex.openvas.scan.engine.openvas.OpenvasEngine;
-import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasConfig;
+import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasTask;
 import cn.smilex.openvas.scan.engine.openvas.parse.OpenvasCommandParse;
 import cn.smilex.openvas.scan.mapper.TaskDao;
 import cn.smilex.openvas.scan.pojo.Task;
 import cn.smilex.openvas.scan.service.TaskService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,22 +24,26 @@ import java.util.List;
 @Slf4j
 @Service
 public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskService {
-
-    private OpenvasEngine openvasEngine;
-
-    @Autowired
-    public void setOpenvasEngine(OpenvasEngine openvasEngine) {
-        this.openvasEngine = openvasEngine;
-    }
-
     /**
-     * 获取所有task
+     * 获取所有Task
      *
-     * @return task list
+     * @return Task List
      */
     @Override
     public String selectAllTask() {
-        OpenvasCommandParse<List<OpenvasConfig>> openvasCommandParse = openvasEngine.getCommandParseByCommand(OpenvasCommand.GET_TASKS);
-        return openvasEngine.execute(openvasCommandParse.getEmptyXml());
+        OpenvasCommandParse<List<OpenvasTask>> openvasCommandParse = OpenvasEngine.getCommandParseByCommand(OpenvasCommand.GET_TASKS);
+        return OpenvasEngine.execute(openvasCommandParse.getEmptyXml());
+    }
+
+    /**
+     * 根据任务ID获取任务
+     *
+     * @param taskId 任务ID
+     * @return 任务
+     */
+    @Override
+    public String selectConfigById(String taskId) {
+        OpenvasCommandParse<List<OpenvasTask>> openvasCommandParse = OpenvasEngine.getCommandParseByCommand(OpenvasCommand.GET_TASK);
+        return OpenvasEngine.execute(openvasCommandParse.getEmptyXml(taskId));
     }
 }

@@ -1,8 +1,6 @@
 package cn.smilex.openvas.scan.engine.openvas;
 
-import cn.smilex.openvas.scan.engine.openvas.parse.OpenvasCommandGetConfigs;
-import cn.smilex.openvas.scan.engine.openvas.parse.OpenvasCommandGetTasks;
-import cn.smilex.openvas.scan.engine.openvas.parse.OpenvasCommandParse;
+import cn.smilex.openvas.scan.engine.openvas.parse.*;
 import cn.smilex.openvas.scan.exception.OpenvasScanException;
 import cn.smilex.openvas.scan.pojo.HashMapBuilder;
 import cn.smilex.openvas.scan.runtime.OpenvasProcessTask;
@@ -22,9 +20,11 @@ public class OpenvasEngine {
     private static final Map<OpenvasCommand, OpenvasCommandParse<?>> OPENVAS_COMMAND_PARSE_MAP;
 
     static {
-        OPENVAS_COMMAND_PARSE_MAP = new HashMapBuilder<OpenvasCommand, OpenvasCommandParse<?>>(2)
+        OPENVAS_COMMAND_PARSE_MAP = new HashMapBuilder<OpenvasCommand, OpenvasCommandParse<?>>(4)
                 .put(OpenvasCommand.GET_CONFIGS, new OpenvasCommandGetConfigs())
+                .put(OpenvasCommand.GET_CONFIG, new OpenvasCommandGetConfig())
                 .put(OpenvasCommand.GET_TASKS, new OpenvasCommandGetTasks())
+                .put(OpenvasCommand.GET_TASK, new OpenvasCommandGetTask())
                 .get();
     }
 
@@ -47,7 +47,7 @@ public class OpenvasEngine {
      * @param <T>            unknown type
      * @return 解析器
      */
-    public <T> OpenvasCommandParse<T> getCommandParseByCommand(OpenvasCommand openvasCommand) {
+    public static <T> OpenvasCommandParse<T> getCommandParseByCommand(OpenvasCommand openvasCommand) {
         return (OpenvasCommandParse<T>) OPENVAS_COMMAND_PARSE_MAP.get(openvasCommand);
     }
 
@@ -57,7 +57,7 @@ public class OpenvasEngine {
      * @param command 命令
      * @return result
      */
-    public String execute(String command) {
+    public static String execute(String command) {
         Future<ProcessTask> future = CommonUtil.submitTaskToCommonThreadPool(new OpenvasProcessTask(command));
 
         try {
