@@ -2,6 +2,7 @@ package cn.smilex.openvas.scan.service.impl;
 
 import cn.smilex.openvas.scan.engine.openvas.OpenvasCommand;
 import cn.smilex.openvas.scan.engine.openvas.OpenvasEngine;
+import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasCommonResponse;
 import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasTask;
 import cn.smilex.openvas.scan.engine.openvas.parse.OpenvasCommandParse;
 import cn.smilex.openvas.scan.entity.CreateTask;
@@ -56,5 +57,17 @@ public class TaskServiceImpl implements TaskService {
     public String createTask(CreateTask createTask) {
         OpenvasCommandParse<List<OpenvasTask>> openvasCommandParse = OpenvasEngine.getCommandParseByCommand(OpenvasCommand.CREATE_TASK);
         return OpenvasEngine.execute(openvasCommandParse.getXml(createTask));
+    }
+
+    /**
+     * 根据任务ID启动任务
+     *
+     * @param taskId 任务ID
+     * @return 结果
+     */
+    @Override
+    public String startTask(String taskId) {
+        OpenvasCommandParse<OpenvasCommonResponse> openvasCommandParse = OpenvasEngine.getCommandParseByCommand(OpenvasCommand.START_TASK);
+        return OpenvasEngine.execute(openvasCommandParse.getEmptyXml(taskId));
     }
 }

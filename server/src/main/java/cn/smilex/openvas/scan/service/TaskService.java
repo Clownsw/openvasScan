@@ -35,4 +35,12 @@ public interface TaskService {
      * @return 结果
      */
     String createTask(CreateTask createTask);
+
+    /**
+     * 根据任务ID启动任务
+     *
+     * @param taskId 任务ID
+     * @return 结果
+     */
+    String startTask(String taskId);
 }

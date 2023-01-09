@@ -89,4 +89,20 @@ public class TaskController {
                 )
         );
     }
+
+    /**
+     * 根据任务ID启动任务
+     *
+     * @param taskId 任务ID
+     * @return 结果
+     */
+    @GetMapping("/startTask")
+    public Result<?> startTask(@RequestParam("taskId") String taskId) {
+        return Result.actionSuccess(
+                openvasEngine.parse(
+                        taskService.startTask(taskId),
+                        OpenvasCommand.START_TASK
+                )
+        );
+    }
 }
