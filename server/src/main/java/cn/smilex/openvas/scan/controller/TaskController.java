@@ -21,8 +21,8 @@ import java.util.List;
  * @author smilex
  * @since 2022/09/30 06:21:16
  */
-@RestController
 @CrossOrigin
+@RestController
 @RequestMapping("/task")
 public class TaskController {
     private OpenvasEngine openvasEngine;

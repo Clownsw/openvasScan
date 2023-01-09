@@ -20,8 +20,9 @@ import java.util.List;
  * @author smilex
  */
 @Slf4j
-@RequestMapping("/target")
+@CrossOrigin
 @RestController
+@RequestMapping("/target")
 public class TargetController {
     private OpenvasEngine openvasEngine;
     private TargetService targetService;
