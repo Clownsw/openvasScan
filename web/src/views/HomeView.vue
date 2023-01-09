@@ -65,7 +65,7 @@
                 prop="log"
                 align="center"
                 label="操作"
-                width="300px"
+                width="200px"
                 :show-overflow-tooltip="true">
               <template slot-scope="slot">
                 <el-button type="primary" :disabled="slot.row.status !== 'New'" size="mini"
