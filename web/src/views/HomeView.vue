@@ -64,10 +64,17 @@
             <el-table-column
                 prop="log"
                 align="center"
-                label="日志"
+                label="操作"
+                width="300px"
                 :show-overflow-tooltip="true">
               <template slot-scope="slot">
-                <el-button type="primary" size="mini" @click="logDialogClick(slot.row.id)">查看</el-button>
+                <el-button type="primary" :disabled="slot.row.status !== 'New'" size="mini"
+                           @click="startTaskClick(slot.row.id)">启动任务
+                </el-button>
+
+                <el-button type="danger" :disabled="slot.row.status !== 'Done'" size="mini"
+                           @click="showTaskResultDialogClick(slot.row.id)">查看结果
+                </el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -76,33 +83,13 @@
     </div>
 
     <el-dialog
-        class="logDialogTable"
         top="2%"
-        title="日志列表"
+        title="任务执行结果"
         append-to-body
-        :visible.sync="logDialogVisible"
+        :visible.sync="taskResultDialogVisible"
         width="60%"
-        :before-close="logDialogHandleClose">
-      <el-table
-          :data="logTableData"
-          style="width: 100%">
-        <el-table-column
-            align="center"
-            prop="log"
-            label="日志"
-            :show-overflow-tooltip="true"
-        >
-        </el-table-column>
-
-        <el-table-column
-            align="center"
-            prop="gmtCreated"
-            label="创建时间"
-            width="180"
-            :show-overflow-tooltip="true"
-        >
-        </el-table-column>
-      </el-table>
+        :before-close="taskResultDialogCloseHandler">
+      <el-input v-model="taskResult" readonly type="textarea" :autosize="{ minRows: 10, maxRows: 30}"/>
     </el-dialog>
   </div>
 </template>
@@ -110,6 +97,7 @@
 <script>
 import common from '../config/common';
 import taskApi from "@/api/task";
+import resultApi from "@/api/result";
 
 export default {
   name: 'HomeView',
@@ -120,15 +108,14 @@ export default {
       task: {
         taskType: 0,
       },
+      taskResult: {},
       createTaskRules: {
         guoKaiId: [
           {required: true, message: '请输入任务ID!', trigger: 'blur'},
         ]
       },
       taskSubmitBtnDisable: true,
-      logDialogVisible: false,
-      logCacheTaskId: 0,
-      logTableData: [],
+      taskResultDialogVisible: false
     }
   },
   methods: {
@@ -144,21 +131,15 @@ export default {
       })
     },
     handlerTabsClick() {
-      this.task = {
-      }
+      this.task = {}
 
       this.taskSubmitBtnDisable = false
 
       if (this.activeName === 'viewTask') {
-        this.taskListPagination = {
-          total: 0,
-          currentPage: 1,
-          pageSize: 10
-        }
         this.getTaskList()
       }
     },
-    taskSubmit(formName, taskType) {
+    taskSubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
 
@@ -167,49 +148,38 @@ export default {
         }
       })
     },
-    getCourseOptions() {
-      taskApi.autoViewSupportList().then(resp => {
+    startTaskClick(taskId) {
+      taskApi.startTask(taskId).then(resp => {
         resp = resp.data
-        this.courseOption = resp.data
+        if (resp.code === 1000 && resp.data !== null) {
+          this.$message.success('启动任务成功')
+        } else {
+          this.$message.success('启动任务失败')
+        }
+        this.getTaskList()
       })
     },
-    logDialogClick(taskId) {
-      this.logCacheTaskId = taskId;
-      logApi.getLogByTaskId({
-        currentPage: this.logListPagination.currentPage,
-        pageSize: this.logListPagination.pageSize,
-        taskId: taskId
-      }).then(resp => {
+    showTaskResultDialogClick(taskId) {
+      resultApi.selectResultById(taskId).then(resp => {
         resp = resp.data
+
         if (resp.code === 1000) {
-          this.logListPagination.currentPage = resp.data.currentPage
-          this.logListPagination.pageSize = resp.data.pageSize
-          this.logListPagination.total = resp.data.total
-          this.logTableData = resp.data.logList
-          this.logDialogVisible = true
+          this.taskResult = resp.data
+          this.taskResultDialogVisible = true
+        } else {
+          this.$message.error('获取任务结果失败')
+          this.taskResultDialogVisible = false
         }
       })
     },
-    logPaginationCurrentChangeHandler(currentPage) {
-      this.logListPagination.currentPage = currentPage
-      this.logDialogClick(this.logCacheTaskId)
-    },
-    logDialogHandleClose(done) {
-      this.logCacheTaskId = 0
-      this.logTableData = []
-      this.logListPagination = {
-        total: 0,
-        currentPage: 1,
-        pageSize: 10
-      }
+    taskResultDialogCloseHandler(done) {
+      this.taskResult = null
       done()
     },
   },
   created() {
     document.title = '首页' + common.WEB_TITLE
     this.getTaskList()
-    this.getConfig()
-    this.getCourseOptions()
   }
 }
 </script>
@@ -233,13 +203,6 @@ export default {
       margin-top: 10px;
       text-align: center;
     }
-  }
-}
-
-.logDialogTable {
-  .logDialogTablePagination {
-    margin-top: 10px;
-    text-align: center;
   }
 }
 </style>

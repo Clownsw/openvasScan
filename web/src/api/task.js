@@ -6,5 +6,8 @@ export default {
     },
     taskList() {
         return axios.get(`task/list`)
+    },
+    startTask(taskId) {
+        return axios.get(`task/startTask?taskId=${taskId}`)
     }
 }
