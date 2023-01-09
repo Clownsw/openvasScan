@@ -30,11 +30,8 @@ public class ProcessTask implements Callable<ProcessTask> {
     public ProcessTask call() {
         try {
             Process process = Runtime.getRuntime().exec(this.command);
-            if (process.waitFor() != 0) {
-                this.errorMsg = IoUtil.read(process.getErrorStream(), StandardCharsets.UTF_8);
-            } else {
-                this.result = IoUtil.read(process.getInputStream(), StandardCharsets.UTF_8);
-            }
+            this.result = IoUtil.read(process.getInputStream(), StandardCharsets.UTF_8);
+            this.errorMsg = IoUtil.read(process.getErrorStream(), StandardCharsets.UTF_8);
         } catch (Exception e) {
             this.errorMsg = e.getMessage();
         }

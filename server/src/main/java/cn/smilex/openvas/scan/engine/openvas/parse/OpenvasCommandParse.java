@@ -3,8 +3,6 @@ package cn.smilex.openvas.scan.engine.openvas.parse;
 import cn.smilex.openvas.scan.config.CommonConfig;
 import cn.smilex.openvas.scan.engine.openvas.OpenvasParams;
 
-import java.util.Map;
-
 /**
  * @author smilex
  */
