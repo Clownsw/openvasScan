@@ -6,10 +6,10 @@ import org.w3c.dom.Element;
 /**
  * @author smilex
  */
-public class OpenvasCommandStructCommonResponse implements OpenvasCommandStructParse<OpenvasCommonResponse> {
-    private static final OpenvasCommandStructCommonResponse INSTANCE = new OpenvasCommandStructCommonResponse();
+public class OpenvasCommandStructParseCommonResponse implements OpenvasCommandStructParse<OpenvasCommonResponse> {
+    private static final OpenvasCommandStructParseCommonResponse INSTANCE = new OpenvasCommandStructParseCommonResponse();
 
-    public static OpenvasCommandStructCommonResponse getInstance() {
+    public static OpenvasCommandStructParseCommonResponse getInstance() {
         return INSTANCE;
     }
 

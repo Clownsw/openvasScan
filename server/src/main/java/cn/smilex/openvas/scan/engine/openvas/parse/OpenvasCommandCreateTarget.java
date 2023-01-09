@@ -20,7 +20,7 @@ public class OpenvasCommandCreateTarget implements OpenvasCommandParse<OpenvasCo
     public OpenvasCommonResponse parse(String xml) {
         try {
             Document root = XmlUtil.parseXml(xml);
-            return OpenvasCommandStructCommonResponse.getInstance().parse(XmlUtil.getRootElement(root));
+            return OpenvasCommandStructParseCommonResponse.getInstance().parse(XmlUtil.getRootElement(root));
         } catch (Exception e) {
             log.error("", e);
         }

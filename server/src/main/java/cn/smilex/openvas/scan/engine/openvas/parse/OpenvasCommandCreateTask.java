@@ -22,7 +22,7 @@ public class OpenvasCommandCreateTask implements OpenvasCommandParse<OpenvasComm
     public OpenvasCommonResponse parse(String xml) {
         try {
             Document root = XmlUtil.parseXml(xml);
-            return OpenvasCommandStructCommonResponse.getInstance().parse(XmlUtil.getRootElement(root));
+            return OpenvasCommandStructParseCommonResponse.getInstance().parse(XmlUtil.getRootElement(root));
         } catch (Exception e) {
             log.error("", e);
         }
