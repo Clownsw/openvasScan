@@ -1,5 +1,6 @@
 package cn.smilex.openvas.scan.controller;
 
+import cn.smilex.openvas.scan.config.ResultCode;
 import cn.smilex.openvas.scan.engine.openvas.OpenvasCommand;
 import cn.smilex.openvas.scan.engine.openvas.OpenvasEngine;
 import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasTask;
@@ -79,10 +80,13 @@ public class TaskController {
     @PostMapping("/createTask")
     public Result<?> createTask(@RequestBody CreateTask createTask) throws IllegalAccessException {
         if (ClassUtil.objIsNull(CreateTask.class, createTask)) {
-            return Result.actionError();
+            return Result.fromResultCode(ResultCode.ERROR_NOT_FOUND_REQUEST_PARAMS);
         }
         return Result.actionSuccess(
-                taskService.createTask(createTask)
+                openvasEngine.parse(
+                        taskService.createTask(createTask),
+                        OpenvasCommand.CREATE_TASK
+                )
         );
     }
 }

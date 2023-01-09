@@ -5,10 +5,7 @@ import cn.smilex.openvas.scan.engine.openvas.OpenvasEngine;
 import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasTask;
 import cn.smilex.openvas.scan.engine.openvas.parse.OpenvasCommandParse;
 import cn.smilex.openvas.scan.entity.CreateTask;
-import cn.smilex.openvas.scan.mapper.TaskDao;
-import cn.smilex.openvas.scan.pojo.Task;
 import cn.smilex.openvas.scan.service.TaskService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +21,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskService {
+public class TaskServiceImpl implements TaskService {
     /**
      * 获取所有Task
      *
@@ -47,6 +44,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         OpenvasCommandParse<List<OpenvasTask>> openvasCommandParse = OpenvasEngine.getCommandParseByCommand(OpenvasCommand.GET_TASK);
         return OpenvasEngine.execute(openvasCommandParse.getEmptyXml(taskId));
     }
+
 
     /**
      * 创建任务

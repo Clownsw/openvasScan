@@ -1,8 +1,6 @@
 package cn.smilex.openvas.scan.service;
 
 import cn.smilex.openvas.scan.entity.CreateTask;
-import cn.smilex.openvas.scan.pojo.Task;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>
@@ -13,7 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2022/09/30 06:21:16
  */
 @SuppressWarnings("all")
-public interface TaskService extends IService<Task> {
+public interface TaskService {
 
     /**
      * 获取所有task

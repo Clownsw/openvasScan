@@ -8,5 +8,6 @@ public enum OpenvasCommand {
     GET_CONFIG,
     GET_TASKS,
     GET_TASK,
+    CREATE_TARGET,
     CREATE_TASK
 }

@@ -3,7 +3,6 @@ package cn.smilex.openvas.scan.engine.openvas.parse;
 import cn.hutool.core.util.XmlUtil;
 import cn.smilex.openvas.scan.engine.openvas.OpenvasParams;
 import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasCommonResponse;
-import cn.smilex.openvas.scan.pojo.HashMapBuilder;
 import cn.smilex.openvas.scan.pojo.XmlTagBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Document;
@@ -14,8 +13,8 @@ import java.util.Map;
  * @author smilex
  */
 @Slf4j
-public class OpenvasCommandCreateTask implements OpenvasCommandParse<OpenvasCommonResponse> {
-    private static final String ROOT_TAG_NAME = "create_task";
+public class OpenvasCommandCreateTarget implements OpenvasCommandParse<OpenvasCommonResponse> {
+    private static final String ROOT_TAG_NAME = "create_target";
 
     @Override
     public OpenvasCommonResponse parse(String xml) {
@@ -32,40 +31,25 @@ public class OpenvasCommandCreateTask implements OpenvasCommandParse<OpenvasComm
     public String getXml(OpenvasParams params) {
         Map<String, Object> map = params.toMap();
 
-        String sb = new XmlTagBuilder(
+        String value = new XmlTagBuilder(
                 "name",
-                (String) map.get("taskName")
+                (String) map.get("name")
         )
                 .getXml() +
                 new XmlTagBuilder(
-                        "comment",
-                        (String) map.get("comment")
+                        "hosts",
+                        (String) map.get("hosts")
                 )
                         .getXml() +
                 new XmlTagBuilder(
-                        "config",
-                        new HashMapBuilder<String, Object>(1)
-                                .put("id", map.get("configId"))
-                                .get()
-                )
-                        .getXml() +
-                new XmlTagBuilder(
-                        "target",
-                        new HashMapBuilder<String, Object>(1)
-                                .put("id", map.get("targetId"))
-                                .get()
-                )
-                        .getXml() +
-                new XmlTagBuilder(
-                        "scanner",
-                        new HashMapBuilder<String, Object>(1)
-                                .put("id", map.get("scannerId"))
-                                .get()
+                        "port_range",
+                        (String) map.get("port_range")
                 )
                         .getXml();
+
         return new XmlTagBuilder(
                 ROOT_TAG_NAME,
-                sb
+                value
         )
                 .getXml();
     }
