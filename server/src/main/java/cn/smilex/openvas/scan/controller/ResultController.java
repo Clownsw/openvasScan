@@ -1,9 +1,12 @@
 package cn.smilex.openvas.scan.controller;
 
 import cn.smilex.openvas.scan.pojo.Result;
-import cn.smilex.openvas.scan.service.ResultService;
+import cn.smilex.openvas.scan.service.ReportService;
+import cn.smilex.openvas.scan.service.impl.TaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 /**
  * @author smilex
@@ -12,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/result")
 public class ResultController {
-    private ResultService resultService;
+    private ReportService reportService;
 
     @Autowired
-    public void setResultService(ResultService resultService) {
-        this.resultService = resultService;
+    public void setReportService(ReportService reportService) {
+        this.reportService = reportService;
     }
 
     /**
@@ -28,7 +31,9 @@ public class ResultController {
     @GetMapping("/one")
     public Result<?> selectResultById(@RequestParam("taskId") String taskId) {
         return Result.actionSuccess(
-                resultService.selectResultById(taskId)
+                reportService.selectReportById(
+                        Objects.requireNonNull(TaskServiceImpl.getOpenvasTaskIdById(taskId)).getRight()
+                )
         );
     }
 }

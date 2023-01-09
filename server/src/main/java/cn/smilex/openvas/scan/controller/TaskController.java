@@ -5,10 +5,12 @@ import cn.smilex.openvas.scan.config.ResultCode;
 import cn.smilex.openvas.scan.engine.openvas.OpenvasCommand;
 import cn.smilex.openvas.scan.engine.openvas.OpenvasEngine;
 import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasCommonResponse;
+import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasStartTaskResponse;
 import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasTask;
 import cn.smilex.openvas.scan.entity.CreateTarget;
 import cn.smilex.openvas.scan.entity.CreateTask;
 import cn.smilex.openvas.scan.pojo.Result;
+import cn.smilex.openvas.scan.pojo.Tuple;
 import cn.smilex.openvas.scan.service.TargetService;
 import cn.smilex.openvas.scan.service.TaskService;
 import cn.smilex.openvas.scan.service.impl.TaskServiceImpl;
@@ -120,7 +122,7 @@ public class TaskController {
         );
 
         if (createTaskResponse.isOk()) {
-            TaskServiceImpl.addToOpenvasTaskIdQueue(createTaskResponse.getId());
+            TaskServiceImpl.addToOpenvasTaskIdQueue(createTaskResponse.getId(), null);
 
             return Result.actionSuccess(createTaskResponse);
         }
@@ -136,11 +138,19 @@ public class TaskController {
      */
     @GetMapping("/startTask")
     public Result<?> startTask(@RequestParam("taskId") String taskId) {
-        return Result.actionSuccess(
-                openvasEngine.parse(
-                        taskService.startTask(taskId),
-                        OpenvasCommand.START_TASK
-                )
+        OpenvasStartTaskResponse openvasStartTaskResponse = openvasEngine.parse(
+                taskService.startTask(taskId),
+                OpenvasCommand.START_TASK
         );
+
+        if (openvasStartTaskResponse.isOk()) {
+            Tuple<String, String> openvasTaskIdById = TaskServiceImpl.getOpenvasTaskIdById(taskId);
+            assert openvasTaskIdById != null;
+            openvasTaskIdById.setRight(openvasStartTaskResponse.getReportId());
+            TaskServiceImpl.readOrWriteOpenvasTaskIdCache(false);
+            return Result.actionSuccess(openvasStartTaskResponse);
+        }
+
+        return Result.actionError();
     }
 }

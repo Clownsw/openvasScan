@@ -1,7 +1,7 @@
 package cn.smilex.openvas.scan.engine.openvas.parse;
 
 import cn.hutool.core.util.XmlUtil;
-import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasCommonResponse;
+import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasStartTaskResponse;
 import cn.smilex.openvas.scan.pojo.HashMapBuilder;
 import cn.smilex.openvas.scan.pojo.XmlTagBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -13,14 +13,14 @@ import org.w3c.dom.Document;
  */
 @SuppressWarnings("DuplicatedCode")
 @Slf4j
-public class OpenvasCommandStartTask implements OpenvasCommandParse<OpenvasCommonResponse> {
+public class OpenvasCommandStartTask implements OpenvasCommandParse<OpenvasStartTaskResponse> {
     private static final String ROOT_TAG_NAME = "start_task";
 
     @Override
-    public OpenvasCommonResponse parse(String xml) {
+    public OpenvasStartTaskResponse parse(String xml) {
         try {
             Document root = XmlUtil.parseXml(xml);
-            return OpenvasCommandStructCommonResponse.getInstance().parse(XmlUtil.getRootElement(root));
+            return OpenvasCommandStructParseStartTaskResponse.getInstance().parse(XmlUtil.getRootElement(root));
         } catch (Exception e) {
             log.error("", e);
         }

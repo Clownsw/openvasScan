@@ -7,6 +7,7 @@ import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasTask;
 import cn.smilex.openvas.scan.engine.openvas.parse.OpenvasCommandParse;
 import cn.smilex.openvas.scan.entity.CreateTask;
 import cn.smilex.openvas.scan.entity.StructuredTaskScope;
+import cn.smilex.openvas.scan.pojo.Tuple;
 import cn.smilex.openvas.scan.service.TaskService;
 import cn.smilex.openvas.scan.util.JsonUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -38,7 +39,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Service
 public class TaskServiceImpl implements TaskService {
     public static final Path OPENVAS_TASK_BACK_PATH = Paths.get(System.getProperty("user.dir") + File.separator + "task");
-    private static BlockingQueue<String> OPENVAS_TASK_ID_QUEUE = new LinkedBlockingQueue<>();
+    private static BlockingQueue<Tuple<String, String>> OPENVAS_TASK_ID_QUEUE = new LinkedBlockingQueue<>();
 
     private OpenvasEngine openvasEngine;
 
@@ -57,7 +58,7 @@ public class TaskServiceImpl implements TaskService {
 
                 OPENVAS_TASK_ID_QUEUE = JsonUtil.OBJECT_MAPPER.readValue(
                         Files.readAllBytes(OPENVAS_TASK_BACK_PATH),
-                        new TypeReference<LinkedBlockingQueue<String>>() {
+                        new TypeReference<LinkedBlockingQueue<Tuple<String, String>>>() {
                         }
                 );
             } else {
@@ -73,10 +74,20 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    public static void addToOpenvasTaskIdQueue(String taskId) {
-        OPENVAS_TASK_ID_QUEUE.add(taskId);
+    public static void addToOpenvasTaskIdQueue(String taskId, String reportId) {
+        OPENVAS_TASK_ID_QUEUE.add(new Tuple<>(taskId, reportId));
 
         readOrWriteOpenvasTaskIdCache(false);
+    }
+
+    public static Tuple<String, String> getOpenvasTaskIdById(String taskId) {
+        for (Tuple<String, String> openvasTaskId : OPENVAS_TASK_ID_QUEUE) {
+            if (taskId.equals(openvasTaskId.getLeft())) {
+                return openvasTaskId;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -89,10 +100,10 @@ public class TaskServiceImpl implements TaskService {
         BlockingQueue<OpenvasTask> openvasTaskBlockingQueue = new LinkedBlockingQueue<>();
 
         try (StructuredTaskScope scope = new StructuredTaskScope(true, OPENVAS_TASK_ID_QUEUE.size())) {
-            for (String openvasTaskId : OPENVAS_TASK_ID_QUEUE) {
+            for (Tuple<String, String> openvasTaskId : OPENVAS_TASK_ID_QUEUE) {
                 scope.fork(() -> {
                     List<OpenvasTask> openvasTaskList = openvasEngine.parse(
-                            selectTaskById(openvasTaskId),
+                            selectTaskById(openvasTaskId.getLeft()),
                             OpenvasCommand.GET_TASK
                     );
 
