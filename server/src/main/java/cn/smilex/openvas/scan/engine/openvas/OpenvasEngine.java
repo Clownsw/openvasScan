@@ -20,7 +20,7 @@ public class OpenvasEngine {
     private static final Map<OpenvasCommand, OpenvasCommandParse<?>> OPENVAS_COMMAND_PARSE_MAP;
 
     static {
-        OPENVAS_COMMAND_PARSE_MAP = new HashMapBuilder<OpenvasCommand, OpenvasCommandParse<?>>(9)
+        OPENVAS_COMMAND_PARSE_MAP = new HashMapBuilder<OpenvasCommand, OpenvasCommandParse<?>>(10)
                 .put(OpenvasCommand.GET_CONFIGS, new OpenvasCommandGetConfigs())
                 .put(OpenvasCommand.GET_CONFIG, new OpenvasCommandGetConfig())
                 .put(OpenvasCommand.GET_TASKS, new OpenvasCommandGetTasks())
@@ -30,6 +30,7 @@ public class OpenvasEngine {
                 .put(OpenvasCommand.CREATE_TARGET, new OpenvasCommandCreateTarget())
                 .put(OpenvasCommand.CREATE_TASK, new OpenvasCommandCreateTask())
                 .put(OpenvasCommand.START_TASK, new OpenvasCommandStartTask())
+                .put(OpenvasCommand.GET_RESULT, new OpenvasCommandGetResult())
                 .get();
     }
 

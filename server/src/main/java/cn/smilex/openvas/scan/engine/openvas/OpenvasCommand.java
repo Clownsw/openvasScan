@@ -10,6 +10,7 @@ public enum OpenvasCommand {
     GET_TASK,
     GET_TARGETS,
     GET_PORT_RANGE,
+    GET_RESULT,
     CREATE_TARGET,
     CREATE_TASK,
     START_TASK
