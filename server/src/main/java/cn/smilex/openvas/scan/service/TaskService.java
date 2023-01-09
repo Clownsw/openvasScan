@@ -1,5 +1,6 @@
 package cn.smilex.openvas.scan.service;
 
+import cn.smilex.openvas.scan.entity.CreateTask;
 import cn.smilex.openvas.scan.pojo.Task;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -28,4 +29,12 @@ public interface TaskService extends IService<Task> {
      * @return 任务
      */
     String selectConfigById(String taskId);
+
+    /**
+     * 创建任务
+     *
+     * @param createTask 创建任务对象
+     * @return 结果
+     */
+    String createTask(CreateTask createTask);
 }

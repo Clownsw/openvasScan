@@ -3,13 +3,11 @@ package cn.smilex.openvas.scan.engine.openvas.parse;
 import cn.hutool.core.util.XmlUtil;
 import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasTask;
 import cn.smilex.openvas.scan.util.CommonUtil;
-import org.springframework.stereotype.Component;
 import org.w3c.dom.Element;
 
 /**
  * @author smilex
  */
-@Component
 public final class OpenvasCommandStructParseTask implements OpenvasCommandStructParse<OpenvasTask> {
     private static final OpenvasCommandStructParseTask INSTANCE = new OpenvasCommandStructParseTask();
 

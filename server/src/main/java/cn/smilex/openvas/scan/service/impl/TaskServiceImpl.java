@@ -4,6 +4,7 @@ import cn.smilex.openvas.scan.engine.openvas.OpenvasCommand;
 import cn.smilex.openvas.scan.engine.openvas.OpenvasEngine;
 import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasTask;
 import cn.smilex.openvas.scan.engine.openvas.parse.OpenvasCommandParse;
+import cn.smilex.openvas.scan.entity.CreateTask;
 import cn.smilex.openvas.scan.mapper.TaskDao;
 import cn.smilex.openvas.scan.pojo.Task;
 import cn.smilex.openvas.scan.service.TaskService;
@@ -45,5 +46,17 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     public String selectConfigById(String taskId) {
         OpenvasCommandParse<List<OpenvasTask>> openvasCommandParse = OpenvasEngine.getCommandParseByCommand(OpenvasCommand.GET_TASK);
         return OpenvasEngine.execute(openvasCommandParse.getEmptyXml(taskId));
+    }
+
+    /**
+     * 创建任务
+     *
+     * @param createTask 创建任务对象
+     * @return 结果
+     */
+    @Override
+    public String createTask(CreateTask createTask) {
+        OpenvasCommandParse<List<OpenvasTask>> openvasCommandParse = OpenvasEngine.getCommandParseByCommand(OpenvasCommand.CREATE_TASK);
+        return OpenvasEngine.execute(openvasCommandParse.getXml(createTask));
     }
 }

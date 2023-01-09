@@ -8,7 +8,7 @@ spring:
       max-request-size: 300MB
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.31.120:3306/openvasScan
+    url: jdbc:mysql://192.168.0.92:3306/openvasScan
     username: root
     password: San*San.c0m
 

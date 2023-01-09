@@ -3,8 +3,10 @@ package cn.smilex.openvas.scan.controller;
 import cn.smilex.openvas.scan.engine.openvas.OpenvasCommand;
 import cn.smilex.openvas.scan.engine.openvas.OpenvasEngine;
 import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasTask;
+import cn.smilex.openvas.scan.entity.CreateTask;
 import cn.smilex.openvas.scan.pojo.Result;
 import cn.smilex.openvas.scan.service.TaskService;
+import cn.smilex.openvas.scan.util.ClassUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,6 +67,22 @@ public class TaskController {
 
         return Result.actionSuccess(
                 openvasTaskList.size() == 0 ? null : openvasTaskList.get(0)
+        );
+    }
+
+    /**
+     * 创建任务
+     *
+     * @param createTask 创建任务对象
+     * @return 结果
+     */
+    @PostMapping("/createTask")
+    public Result<?> createTask(@RequestBody CreateTask createTask) throws IllegalAccessException {
+        if (ClassUtil.objIsNull(CreateTask.class, createTask)) {
+            return Result.actionError();
+        }
+        return Result.actionSuccess(
+                taskService.createTask(createTask)
         );
     }
 }
