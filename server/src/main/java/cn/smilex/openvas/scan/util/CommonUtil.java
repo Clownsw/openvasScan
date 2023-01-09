@@ -59,10 +59,6 @@ public final class CommonUtil {
         return false;
     }
 
-    public static boolean signCookie(String body) {
-        return body.contains("forbidden");
-    }
-
     @SuppressWarnings("all")
     public static <T> void spinLock(Supplier<T> expression, boolean isNull) {
         T v;
@@ -105,7 +101,8 @@ public final class CommonUtil {
      * @return 时间
      */
     public static LocalDateTime parseUtcTime(String time) {
-        return LocalDateTime.from(CommonConfig.DATE_TIME_FORMATTER.parse(time.replace("Z", CommonConfig.EMPTY_STRING)));
+        return LocalDateTime.from(CommonConfig.DATE_TIME_FORMATTER.parse(time.replace("Z", CommonConfig.EMPTY_STRING)))
+                .plusHours(8);
     }
 
     /**
