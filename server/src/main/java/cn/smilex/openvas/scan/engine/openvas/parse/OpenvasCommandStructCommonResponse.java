@@ -16,6 +16,7 @@ public class OpenvasCommandStructCommonResponse implements OpenvasCommandStructP
     @Override
     public OpenvasCommonResponse parse(Element element) {
         return new OpenvasCommonResponse(
+                element.getAttribute("id"),
                 element.getAttribute("status"),
                 element.getAttribute("status_text")
         );

@@ -5,13 +5,49 @@
       <el-tabs v-model="activeName" @tab-click="handlerTabsClick">
 
         <el-tab-pane label="创建任务" name="createTask">
-          <el-form :model="task" :rules="createTaskRules" ref="taskForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="课程ID" prop="guoKaiId">
-              <el-input v-model="task.guoKaiId"></el-input>
+          <el-form :model="task" :rules="createTaskRules" ref="taskForm" label-width="100px">
+            <el-form-item label="任务名称" prop="taskName">
+              <el-input v-model="task.taskName"></el-input>
+            </el-form-item>
+
+            <el-form-item label="扫描配置" prop="configId">
+              <el-select v-model="task.configId" placeholder="请选择" style="width: 500px">
+                <el-option
+                    v-for="item in configOptionList"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="扫描器" prop="scannerId">
+              <el-select v-model="task.scannerId" placeholder="请选择" style="width: 500px">
+                <el-option
+                    v-for="item in scannerOptionList"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="TCP端口" prop="tcpPort">
+              <el-input v-model="task.tcpPort" type="textarea" />
+            </el-form-item>
+
+            <el-form-item label="UDP端口" prop="updPort">
+              <el-input v-model="task.updPort" type="textarea" />
+            </el-form-item>
+
+            <el-form-item label="目标IP" prop="hosts">
+              <el-input v-model="task.hosts" type="textarea" />
             </el-form-item>
 
             <el-form-item>
-              <el-button type="primary" @click="taskSubmit('taskForm', 0)" :disabled="taskSubmitBtnDisable">创建任务
+              <el-button type="primary" @click="taskSubmit('taskForm')" :disabled="taskSubmitBtnDisable" size="mini">创建任务
               </el-button>
             </el-form-item>
           </el-form>
@@ -96,6 +132,8 @@
 
 <script>
 import common from '../config/common';
+import configApi from "@/api/config";
+import scannerApi from "@/api/scanner";
 import taskApi from "@/api/task";
 import resultApi from "@/api/result";
 
@@ -109,9 +147,20 @@ export default {
         taskType: 0,
       },
       taskResult: {},
+      configOptionList: [],
+      scannerOptionList: [],
       createTaskRules: {
-        guoKaiId: [
-          {required: true, message: '请输入任务ID!', trigger: 'blur'},
+        taskName: [
+          {required: true, message: '请输入任务名称!', trigger: 'blur'},
+        ],
+        configId: [
+          {required: true, message: '请选择扫描配置!', trigger: 'blur'},
+        ],
+        scannerId: [
+          {required: true, message: '请选择扫描器!', trigger: 'blur'},
+        ],
+        hosts: [
+          {required: true, message: '请输入目标IP!', trigger: 'blur'},
         ]
       },
       taskSubmitBtnDisable: true,
@@ -130,10 +179,52 @@ export default {
         }
       })
     },
+    selectAllConfig() {
+      configApi.selectAllConfig().then(resp => {
+        resp = resp.data
+        if (resp.code === 1000) {
+          let configOptionList = []
+          for (let i = 0; i < resp.data.length; i++) {
+            configOptionList[i] = {
+              name: resp.data[i].name,
+              value: resp.data[i].id
+            }
+          }
+          this.configOptionList = configOptionList
+        } else {
+          this.$message.error('获取扫描配置失败')
+        }
+      })
+    },
+    selectAllScanner() {
+      scannerApi.selectAllScanner().then(resp => {
+        resp = resp.data
+        if (resp.code === 1000) {
+          let scannerOptionList = []
+          for (let i = 0; i < resp.data.length; i++) {
+            scannerOptionList[i] = {
+              name: resp.data[i].name,
+              value: resp.data[i].id
+            }
+          }
+          this.scannerOptionList = scannerOptionList
+        } else {
+          this.$message.error('获取扫描配置失败')
+        }
+      })
+    },
     handlerTabsClick() {
       this.task = {}
+      this.taskResult = {}
+      this.configOptionList = []
+      this.scannerOptionList = []
 
       this.taskSubmitBtnDisable = false
+
+      if (this.activeName === 'createTask') {
+        this.selectAllConfig()
+        this.selectAllScanner()
+      }
 
       if (this.activeName === 'viewTask') {
         this.getTaskList()
@@ -142,7 +233,14 @@ export default {
     taskSubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-
+          taskApi.createTask(this.task).then(resp => {
+            resp = resp.data
+            if (resp.code === 1000 && resp.data !== null) {
+              this.$message.success('创建任务成功')
+            } else {
+              this.$message.error('创建任务失败')
+            }
+          })
         } else {
           return false;
         }

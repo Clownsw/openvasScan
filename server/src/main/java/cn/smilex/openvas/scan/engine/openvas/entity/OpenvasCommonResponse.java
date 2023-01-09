@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OpenvasCommonResponse {
+    private String id;
     private String status;
     private String statusText;
 

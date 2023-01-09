@@ -1,6 +1,7 @@
 package cn.smilex.openvas.scan.engine.openvas.parse;
 
 import cn.hutool.core.util.XmlUtil;
+import cn.smilex.openvas.scan.config.CommonConfig;
 import cn.smilex.openvas.scan.engine.openvas.OpenvasParams;
 import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasCommonResponse;
 import cn.smilex.openvas.scan.pojo.HashMapBuilder;
@@ -39,7 +40,7 @@ public class OpenvasCommandCreateTask implements OpenvasCommandParse<OpenvasComm
                 .getXml() +
                 new XmlTagBuilder(
                         "comment",
-                        (String) map.get("comment")
+                        CommonConfig.EMPTY_STRING
                 )
                         .getXml() +
                 new XmlTagBuilder(
