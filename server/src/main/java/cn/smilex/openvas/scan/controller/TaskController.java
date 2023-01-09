@@ -11,6 +11,7 @@ import cn.smilex.openvas.scan.entity.CreateTask;
 import cn.smilex.openvas.scan.pojo.Result;
 import cn.smilex.openvas.scan.service.TargetService;
 import cn.smilex.openvas.scan.service.TaskService;
+import cn.smilex.openvas.scan.service.impl.TaskServiceImpl;
 import cn.smilex.openvas.scan.util.ClassUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,12 +58,7 @@ public class TaskController {
      */
     @GetMapping("/list")
     public Result<?> selectAllTask() {
-        return Result.actionSuccess(
-                openvasEngine.parse(
-                        taskService.selectAllTask(),
-                        OpenvasCommand.GET_TASKS
-                )
-        );
+        return Result.actionSuccess(taskService.selectAllTask());
     }
 
     /**
@@ -74,7 +70,7 @@ public class TaskController {
     @GetMapping("/one")
     public Result<?> selectTaskById(@RequestParam("taskId") String taskId) {
         List<OpenvasTask> openvasTaskList = openvasEngine.parse(
-                taskService.selectConfigById(taskId),
+                taskService.selectTaskById(taskId),
                 OpenvasCommand.GET_TASK
         );
 
@@ -118,13 +114,18 @@ public class TaskController {
 
         createTask.setTargetId(openvasCommonResponse.getId());
 
-
-        return Result.actionSuccess(
-                openvasEngine.parse(
-                        taskService.createTask(createTask),
-                        OpenvasCommand.CREATE_TASK
-                )
+        OpenvasCommonResponse createTaskResponse = openvasEngine.parse(
+                taskService.createTask(createTask),
+                OpenvasCommand.CREATE_TASK
         );
+
+        if (createTaskResponse.isOk()) {
+            TaskServiceImpl.addToOpenvasTaskIdQueue(createTaskResponse.getId());
+
+            return Result.actionSuccess(createTaskResponse);
+        }
+
+        return Result.actionError();
     }
 
     /**

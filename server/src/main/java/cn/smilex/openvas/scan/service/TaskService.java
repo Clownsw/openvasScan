@@ -1,6 +1,9 @@
 package cn.smilex.openvas.scan.service;
 
+import cn.smilex.openvas.scan.engine.openvas.entity.OpenvasTask;
 import cn.smilex.openvas.scan.entity.CreateTask;
+
+import java.util.Queue;
 
 /**
  * <p>
@@ -18,7 +21,7 @@ public interface TaskService {
      *
      * @return task list
      */
-    String selectAllTask();
+    Queue<OpenvasTask> selectAllTask();
 
     /**
      * 根据任务ID获取任务
@@ -26,7 +29,7 @@ public interface TaskService {
      * @param taskId 任务ID
      * @return 任务
      */
-    String selectConfigById(String taskId);
+    String selectTaskById(String taskId);
 
     /**
      * 创建任务
