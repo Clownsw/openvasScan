@@ -34,6 +34,7 @@ public class OpenvasCommandGetPortRange implements OpenvasCommandParse<OpenvasPo
             List<OpenvasPortRange> openvasPortRangeList = openvasPortList.getOpenvasPortRangeList();
 
             for (Element element : portList) {
+                openvasPortList.setId(element.getAttribute("id"));
                 Element portRanges = XmlUtil.getElement(element, "port_ranges");
 
                 if (portRanges == null) {
