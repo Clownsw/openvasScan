@@ -1,4 +1,4 @@
-const WEB_TITLE = ' - 国开解析平台'
+const WEB_TITLE = ' - Openvas漏扫Demo'
 
 export default {
     WEB_TITLE

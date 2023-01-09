@@ -1,10 +1,8 @@
 import axios from "axios";
-import router from "@/router";
 import store from '../store'
 import ElementUI from 'element-ui';
-import userApi from "@/api/user";
 
-axios.defaults.baseURL = 'http://localhost:1111/'
+axios.defaults.baseURL = 'http://192.166.0.92:1111/'
 axios.defaults.headers.token = store.getters.GET_TOKEN
 
 axios.interceptors.request
@@ -24,30 +22,3 @@ axios.interceptors.response
     }, (error) => {
         return Promise.reject(error);
     })
-
-router.beforeEach((to, from, next) => {
-    let r = async () => {
-        const fullPath = to.fullPath;
-        if (fullPath === '/register') {
-            next()
-        } else {
-            let resp = await userApi.tokenSign({
-                token: store.getters.GET_TOKEN
-            })
-
-            const tokenSign = resp.data.data;
-
-            if (tokenSign && fullPath === '/login') {
-                next('/')
-            } else {
-                if (!tokenSign && fullPath !== '/login') {
-                    next("/login")
-                } else {
-                    next()
-                }
-            }
-        }
-    }
-    r().then(() => {
-    })
-})
